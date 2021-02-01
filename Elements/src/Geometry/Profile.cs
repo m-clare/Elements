@@ -20,9 +20,33 @@ namespace Elements.Geometry
         }
 
         /// <summary>
+        /// Get all of the line segments for this profile from the perimeter and the voids
+        /// </summary>
+        public List<Line> Segments()
+        {
+            IEnumerable<Line> lines = Perimeter.Segments();
+            if (Voids != null)
+            {
+                lines = lines.Union(Voids.SelectMany(v => v.Segments()));
+            }
+            return lines.ToList();
+        }
+
+        public Profile Project()
+        {
+            var xy = new Plane(Vector3.Origin, Vector3.ZAxis);
+            var profile = new Profile(Perimeter.Project(xy));
+            if (Voids != null && Voids.Count > 0)
+            {
+                profile.Voids = Voids.Select(v => v.Project(xy)).ToList();
+            }
+            return profile;
+        }
+
+        /// <summary>
         /// Construct a profile from a collection of polygons.
         /// If the collection contains more than one polygon, the first polygon
-        /// will be used as the perimeter and any remaining polygons will 
+        /// will be used as the perimeter and any remaining polygons will
         /// be used as voids.
         /// </summary>
         /// <param name="polygons">The polygons bounding this profile.</param>
@@ -300,7 +324,7 @@ namespace Elements.Geometry
         }
 
         /// <summary>
-        /// Tests if a point is contained within this profile. Returns false for points that are outside of the profile (or within voids). 
+        /// Tests if a point is contained within this profile. Returns false for points that are outside of the profile (or within voids).
         /// </summary>
         /// <param name="point">The position to test.</param>
         /// <param name="containment">Whether the point is inside, outside, at an edge, or at a vertex.</param>

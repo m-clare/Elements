@@ -889,6 +889,12 @@ namespace Elements.Geometry
             }
         }
 
+        public Polygon Project()
+        {
+            var xy = new Plane(Vector3.Origin, Vector3.ZAxis);
+            return Project(xy);
+        }
+
         /// <summary>
         /// Transform a specified segment of this polygon in place.
         /// </summary>
