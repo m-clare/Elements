@@ -192,6 +192,31 @@ namespace Elements.Geometry
         }
 
         /// <summary>
+        /// Get the line line intersection in 2D if it exists
+        /// </summary>
+        /// <param name="l"></param>
+        /// <returns> Point if the lines intersect, null otherwise? </returns>
+        public Vector3 Intersection2D(Line l)
+        {
+            if (this.Intersects2D(l) == true)
+            {
+                var d = (this.Start.X - this.End.X) * (l.Start.Y - l.End.Y) -
+                        (this.Start.Y - this.End.Y) * (l.Start.X - l.End.X);
+                var a = (this.Start.X * this.End.Y - this.Start.Y * this.End.X);
+                var b = (l.Start.X * l.End.Y - l.Start.Y * l.End.X);
+                var x = (a * (l.Start.X - l.End.X) - b * (this.Start.X - this.End.X)) / d;
+                var y = (a * (l.Start.Y - l.End.Y) - b * (this.Start.Y - this.End.Y)) / d;
+
+                return new Vector3(x, y ,0.0);
+            }
+            else
+            {
+                return null;
+            }
+        }
+
+
+        /// <summary>
         /// Does this line intersect the provided line in 3D?
         /// </summary>
         /// <param name="l"></param>
